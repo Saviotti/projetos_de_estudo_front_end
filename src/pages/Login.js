@@ -16,7 +16,7 @@ export default function Login() {
 
   const handleClick = (event) => {
     event.preventDefault();
-    localStorage.setItem('user', JSON.stringify({ email }));
+    localStorage.setItem('user', email);
     history.push('/meals');
   };
 

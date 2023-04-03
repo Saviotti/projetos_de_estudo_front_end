@@ -1,7 +1,15 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 export default function Profile() {
   const getUserEmail = localStorage.getItem('user');
+
+  const history = useHistory();
+
+  const handleClickDoneRecipes = () => {
+    history.push('/done-recipes');
+  };
+
   return (
     <div>
       <h1>
@@ -19,6 +27,7 @@ export default function Profile() {
         <button
           data-testid="profile-done-btn"
           type="button"
+          onClick={ handleClickDoneRecipes }
         >
           Done Recipes
         </button>

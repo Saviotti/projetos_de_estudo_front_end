@@ -1,66 +1,62 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Context } from '../context/index';
 import { validateLogin } from '../utils/validateLogin';
 
-const INITIAL_STATE = {
-  email: '',
-  btDisabled: true,
-  password: '',
-};
+const INITIAL_STATE = { email: '', password: '' };
 
 export default function Login() {
   const [state, setState] = useState(INITIAL_STATE);
-  const { setEmail } = useContext(Context);
+  const { email, password } = state;
 
   const handleInputChange = useCallback(({ target }) => {
-    setState((prevState) => ({
-      ...prevState, [target.name]: target.value, btDisabled: validateLogin(prevState),
-    }));
+    setState((prevState) => ({ ...prevState, [target.name]: target.value }));
   }, []);
 
   const history = useHistory();
 
-  const handleClick = () => {
-    const { email } = state;
+  const handleClick = (event) => {
+    event.preventDefault();
     localStorage.setItem('user', JSON.stringify({ email }));
-    setEmail(email);
     history.push('/meals');
   };
 
   return (
-    <div>
+    <form>
       <h1 className="h1">LOGIN</h1>
       <div className="login">
-        <input
-          data-testid="email-input"
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={ state.email }
-          onChange={ handleInputChange }
-          id="email-input"
-        />
-        <input
-          data-testid="password-input"
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={ state.password }
-          onChange={ handleInputChange }
-          id="password-input"
-        />
+        <label htmlFor="email-input">
+          <input
+            data-testid="email-input"
+            id="email-input"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={ email }
+            onChange={ handleInputChange }
+          />
+        </label>
+        <label htmlFor="password-input">
+          <input
+            data-testid="password-input"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={ password }
+            onChange={ handleInputChange }
+            id="password-input"
+          />
+        </label>
         <button
-          type="button"
+          type="submit"
           data-testid="login-submit-btn"
-          name="login-submit-btn"
           id="login-submit-btn"
-          disabled={ state.btDisabled }
+          name="login-submit-btn"
+          disabled={ validateLogin(email, password) }
           onClick={ handleClick }
         >
           Enter
         </button>
       </div>
-    </div>
+    </form>
   );
 }

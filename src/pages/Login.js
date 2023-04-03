@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Context } from '../context/index';
+import { Context } from '../context/ContextProvider';
 import { validateLogin } from '../utils/validateLogin';
 
 const INITIAL_STATE = {

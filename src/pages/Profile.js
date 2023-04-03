@@ -10,6 +10,10 @@ export default function Profile() {
     history.push('/done-recipes');
   };
 
+  const handleClickFavoriteRecipes = () => {
+    history.push('/favorite-recipes');
+  };
+
   return (
     <div>
       <h1>
@@ -34,6 +38,7 @@ export default function Profile() {
         <button
           data-testid="profile-favorite-btn"
           type="button"
+          onClick={ handleClickFavoriteRecipes }
         >
           Favorite Recipes
         </button>

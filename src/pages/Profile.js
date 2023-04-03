@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function Profile() {
+  const getUserEmail = localStorage.getItem('user');
   return (
     <div>
       <h1>
@@ -12,7 +13,7 @@ export default function Profile() {
         type="text"
         id="profile-email"
       >
-        {' email '}
+        {getUserEmail}
       </h3>
       <div>
         <button

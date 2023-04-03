@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 export default function Profile() {
-  const getUserEmail = localStorage.getItem('user');
+  const getUserEmail = JSON.parse(localStorage.getItem('user'));
 
   const history = useHistory();
 
@@ -30,7 +30,7 @@ export default function Profile() {
         type="text"
         id="profile-email"
       >
-        {getUserEmail}
+        {getUserEmail?.email}
       </h3>
       <div>
         <button

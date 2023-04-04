@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 export default function Meals() {
   return (
     <>
-      <h1>Página de Refeições</h1>
+      <h1>MEALS</h1>
       <Footer />
     </>
   );

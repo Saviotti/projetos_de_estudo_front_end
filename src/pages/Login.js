@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { validateLogin } from '../utils/validateLogin';
 
@@ -8,9 +8,9 @@ export default function Login() {
   const [state, setState] = useState(INITIAL_STATE);
   const { email, password } = state;
 
-  const handleInputChange = useCallback(({ target }) => {
+  const handleInputChange = ({ target }) => {
     setState((prevState) => ({ ...prevState, [target.name]: target.value }));
-  }, []);
+  };
 
   const history = useHistory();
 

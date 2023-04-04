@@ -1,11 +1,12 @@
 import React from 'react';
 import ContextProvider from './context';
-import Login from './pages/Login';
+import Routes from './Routes';
+import './App.css';
 
 function App() {
   return (
     <ContextProvider>
-      <Login />
+      <Routes />
     </ContextProvider>
   );
 }

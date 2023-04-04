@@ -66,3 +66,16 @@
     transform: rotate(-10deg);
   }
 }
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.searchBar {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}

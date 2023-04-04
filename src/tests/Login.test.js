@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from '../services/renderWithRouter';
@@ -11,7 +11,7 @@ const passwordTest = '1234567';
 
 describe('Testes do componente Login', () => {
   it('Verifica se os inputs para digitar email e senha foram renderizados', () => {
-    render(<App />);
+    renderWithRouter(<App />);
 
     const inputEmail = screen.getByTestId(inputEmailTestId);
     const inputPassword = screen.getByTestId(inputPasswordTestId);
@@ -20,7 +20,7 @@ describe('Testes do componente Login', () => {
     expect(inputPassword).toBeInTheDocument();
   });
   it('Testa se o botão no componente Login é renderizado e se está desabilitado', () => {
-    render(<App />);
+    renderWithRouter(<App />);
 
     const button = screen.getByRole('button', {
       name: /Enter/i,
@@ -30,7 +30,7 @@ describe('Testes do componente Login', () => {
     expect(button).toBeDisabled();
   });
   it('Testa se o botão no componente Login está habilitado', () => {
-    render(<App />);
+    renderWithRouter(<App />);
 
     const button = screen.getByRole('button', {
       name: /Enter/i,

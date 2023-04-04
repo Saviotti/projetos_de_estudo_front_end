@@ -2,19 +2,18 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import ContextProvider from './context/ContextProvider';
 import DoneRecipes from './pages/DoneRecipes';
-import Drinks from './pages/Drinks';
 import FavoriteRecipes from './pages/FavoriteRecipes';
 import Login from './pages/Login';
-import Meals from './pages/Meals';
 import Profile from './pages/Profile';
+import Recipes from './pages/Recipes';
 
 function App() {
   return (
     <ContextProvider>
       <Switch>
         <Route exact path="/" component={ Login } />
-        <Route path="/drinks" component={ Drinks } />
-        <Route path="/meals" component={ Meals } />
+        <Route path="/drinks" component={ Recipes } />
+        <Route path="/meals" component={ Recipes } />
         <Route path="/profile" component={ Profile } />
         <Route path="/done-recipes" component={ DoneRecipes } />
         <Route path="/favorite-recipes" component={ FavoriteRecipes } />

@@ -56,7 +56,7 @@ export default function Profile() {
           Logout
         </button>
       </div>
-      <Footer showOn={ ['/meals', '/drinks', '/profile'] } />
+      <Footer />
     </div>
   );
 }

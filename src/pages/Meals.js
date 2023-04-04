@@ -5,7 +5,7 @@ export default function Meals() {
   return (
     <>
       <h1>Página de Refeições</h1>
-      <Footer showOn={ ['/meals', '/drinks', '/profile'] } />
+      <Footer />
     </>
   );
 }

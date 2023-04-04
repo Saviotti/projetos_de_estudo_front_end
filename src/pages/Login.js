@@ -14,14 +14,14 @@ export default function Login() {
 
   const history = useHistory();
 
-  const handleClick = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     localStorage.setItem('user', JSON.stringify({ email }));
     history.push('/meals');
   };
 
   return (
-    <form>
+    <form onSubmit={ handleSubmit }>
       <h1 className="h1">LOGIN</h1>
       <div className="login">
         <label htmlFor="email-input">
@@ -52,7 +52,6 @@ export default function Login() {
           id="login-submit-btn"
           name="login-submit-btn"
           disabled={ validateLogin(email, password) }
-          onClick={ handleClick }
         >
           Enter
         </button>

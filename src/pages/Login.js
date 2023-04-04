@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Context } from '../context/ContextProvider';
 import { validateLogin } from '../utils/validateLogin';
@@ -13,11 +13,11 @@ export default function Login() {
   const [state, setState] = useState(INITIAL_STATE);
   const { setEmail } = useContext(Context);
 
-  const handleInputChange = useCallback(({ target }) => {
+  const handleInputChange = ({ target }) => {
     setState((prevState) => ({
       ...prevState, [target.name]: target.value, btDisabled: validateLogin(prevState),
     }));
-  }, []);
+  };
 
   const history = useHistory();
 

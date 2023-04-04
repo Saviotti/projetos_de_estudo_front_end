@@ -5,8 +5,6 @@ import drinkIcon from '../images/drinkIcon.svg';
 import mealIcon from '../images/mealIcon.svg';
 
 export default function Footer() {
-  // const history = useHistory();
-
   return (
     <footer data-testid="footer" className="footer">
       <Link to="/drinks">

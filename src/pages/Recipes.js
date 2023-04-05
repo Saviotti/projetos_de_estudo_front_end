@@ -1,64 +1,107 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Footer from '../components/Footer';
+import {
+  mealsAPI,
+  buttonsMeals,
+  drinksAPI,
+  mealsCategories,
+  drinksCategories,
+  buttonsDrinks,
+} from '../services/recipesAPI';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
-  const history = useHistory();
   const [component, setComponent] = useState(false);
+  const [activeFilter, setActiveFilter] = useState([]);
+  const history = useHistory();
 
   const fetchMeals = async () => {
-    const doze = 12;
-    const api = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-    const response = await api.json();
-    const { meals } = response;
-    const util = meals.slice(0, doze);
-    setRecipes(util);
+    const meals = await mealsAPI();
+    setRecipes(meals);
     setComponent(true);
   };
   const categorieButtonMeal = async () => {
-    const cinco = 5;
-    const categoriesApi = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
-    const response = await categoriesApi.json();
-    const { meals } = response;
-    const util = meals.slice(0, cinco);
-    setCategories(util);
+    const setButtons = await buttonsMeals();
+    setCategories(setButtons);
   };
 
   const fetchDrinks = async () => {
-    const api = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-    const response = await api.json();
-    const { drinks } = response;
-    const doze = 12;
-    const util = drinks.slice(0, doze);
-    setRecipes(util);
+    const drinks = await drinksAPI();
+    setRecipes(drinks);
     setComponent(false);
   };
   const categorieButtonDrink = async () => {
-    const cinco = 5;
-    const categoriesApi = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
-    const response = await categoriesApi.json();
-    const { drinks } = response;
-    const util = drinks.slice(0, cinco);
-    setCategories(util);
+    const setButtons = await buttonsDrinks();
+    setCategories(setButtons);
   };
 
   useEffect(() => {
     if (history.location.pathname === '/meals') {
       fetchMeals();
       categorieButtonMeal();
-    }
-    if (history.location.pathname === '/drinks') {
+    } else {
       fetchDrinks();
       categorieButtonDrink();
     }
-  }, [history.location.pathname]);
+  }, [history]);
+
+  const removeAllFilters = () => {
+    if (history.location.pathname === '/meals') {
+      fetchMeals();
+      categorieButtonMeal();
+    } else {
+      fetchDrinks();
+      categorieButtonDrink();
+    }
+  };
+
+  const handleClick = async (e) => {
+    const equalFilter = activeFilter.some((element) => element === e);
+    if (equalFilter) {
+      removeAllFilters();
+      setActiveFilter([]);
+    } else if (history.location.pathname === '/meals') {
+      const setMealsCategori = await mealsCategories(e);
+      setRecipes(setMealsCategori);
+      setActiveFilter([...activeFilter, e]);
+    } else {
+      const setDrinksCategories = await drinksCategories(e);
+      setRecipes(setDrinksCategories);
+      setActiveFilter([...activeFilter, e]);
+    }
+  };
 
   const componentsMeals = (
     <div>
+      <label htmlFor="buttons">
+        {
+          categories.map((element, index) => (
+            <button
+              key={ index }
+              data-testid={ `${element.strCategory}-category-filter` }
+              name="buttons"
+              type="button"
+              onClick={ () => handleClick(element.strCategory) }
+            >
+              { element.strCategory }
+            </button>
+          ))
+        }
+        {' '}
+        <button
+          data-testid="All-category-filter"
+          type="button"
+          name="buttons"
+          onClick={ removeAllFilters }
+        >
+          All
+        </button>
+      </label>
       {
         recipes.map((recipe, index) => (
-          <div
+          <span
             key={ index }
             data-testid={ `${index}-recipe-card` }
           >
@@ -72,30 +115,41 @@ function Recipes() {
               alt={ recipe.strMeal }
               src={ recipe.strMealThumb }
             />
-          </div>
+          </span>
         ))
       }
-      <label htmlFor="filterButton">
-        {
-          categories.map((element, index) => (
-            <button
-              key={ index }
-              data-testid={ `${element.strCategory}-category-filter` }
-              name="filterButton"
-            >
-              { element.strCategory }
-            </button>
-          ))
-        }
-      </label>
     </div>
   );
 
   const componentsDrinks = (
     <div>
+      <label htmlFor="buttons">
+        {
+          categories.map((element, index) => (
+            <button
+              key={ index }
+              data-testid={ `${element.strCategory}-category-filter` }
+              name="buttons"
+              type="button"
+              onClick={ () => handleClick(element.strCategory) }
+            >
+              { element.strCategory }
+            </button>
+          ))
+        }
+        {' '}
+        <button
+          data-testid="All-category-filter"
+          type="button"
+          name="buttons"
+          onClick={ removeAllFilters }
+        >
+          All
+        </button>
+      </label>
       {
         recipes.map((recipe, index) => (
-          <div
+          <span
             key={ index }
             data-testid={ `${index}-recipe-card` }
           >
@@ -109,27 +163,17 @@ function Recipes() {
               alt={ recipe.strDrink }
               src={ recipe.strDrinkThumb }
             />
-          </div>
+          </span>
         ))
       }
-      <label htmlFor="filterButton">
-        {
-          categories.map((element, index) => (
-            <button
-              key={ index }
-              data-testid={ `${element.strCategory}-category-filter` }
-              name="filterButton"
-            >
-              { element.strCategory }
-            </button>
-          ))
-        }
-      </label>
     </div>
   );
 
   return (
-    component ? componentsMeals : componentsDrinks
+    <>
+      { component ? componentsMeals : componentsDrinks }
+      <Footer />
+    </>
   );
 }
 

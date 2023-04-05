@@ -33,7 +33,7 @@ function Recipes() {
     setComponent(false);
   };
   const categorieButtonDrink = async () => {
-    const setButtons = await buttonsDrinks()
+    const setButtons = await buttonsDrinks();
     setCategories(setButtons);
   };
 

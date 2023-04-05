@@ -3,10 +3,11 @@ import { useHistory } from 'react-router-dom';
 import Footer from '../components/Footer';
 import {
   mealsAPI,
-  categoriesAPI,
+  buttonsMeals,
   drinksAPI,
   mealsCategories,
   drinksCategories,
+  buttonsDrinks,
 } from '../services/recipesAPI';
 
 function Recipes() {
@@ -22,8 +23,8 @@ function Recipes() {
     setComponent(true);
   };
   const categorieButtonMeal = async () => {
-    const nowCategories = await categoriesAPI();
-    setCategories(nowCategories);
+    const setButtons = await buttonsMeals();
+    setCategories(setButtons);
   };
 
   const fetchDrinks = async () => {
@@ -32,12 +33,8 @@ function Recipes() {
     setComponent(false);
   };
   const categorieButtonDrink = async () => {
-    const cinco = 5;
-    const categoriesApi = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
-    const response = await categoriesApi.json();
-    const { drinks } = response;
-    const util = drinks.slice(0, cinco);
-    setCategories(util);
+    const setButtons = await buttonsDrinks()
+    setCategories(setButtons);
   };
 
   useEffect(() => {
@@ -113,9 +110,6 @@ function Recipes() {
             >
               { recipe.strMeal }
             </h2>
-            <p>
-              { recipe.strInstructions }
-            </p>
             <img
               data-testid={ `${index}-card-img` }
               alt={ recipe.strMeal }

@@ -7,7 +7,16 @@ export const mealsAPI = async () => {
   return util;
 };
 
-export const categoriesAPI = async () => {
+export const drinksAPI = async () => {
+  const api = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
+  const response = await api.json();
+  const { drinks } = response;
+  const doze = 12;
+  const util = drinks.slice(0, doze);
+  return util;
+};
+
+export const buttonsMeals = async () => {
   const cinco = 5;
   const categoriesApi = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
   const response = await categoriesApi.json();
@@ -16,12 +25,12 @@ export const categoriesAPI = async () => {
   return util;
 };
 
-export const drinksAPI = async () => {
-  const api = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-  const response = await api.json();
+export const buttonsDrinks = async () => {
+  const cinco = 5;
+  const categoriesApi = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
+  const response = await categoriesApi.json();
   const { drinks } = response;
-  const doze = 12;
-  const util = drinks.slice(0, doze);
+  const util = drinks.slice(0, cinco);
   return util;
 };
 

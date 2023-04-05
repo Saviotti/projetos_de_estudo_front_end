@@ -1,5 +1,7 @@
 import { useState, useCallback, useContext } from 'react';
-import { Context } from '../context';
+import { useLocation } from 'react-router-dom';
+import fetchAPI from '../utils/fetchAPI';
+import { Context } from '../context/index';
 
 function SearchBar() {
   const INITIAL_STATE = {
@@ -8,8 +10,8 @@ function SearchBar() {
   };
 
   const [state, setState] = useState(INITIAL_STATE);
-
-  const { context, setContext } = useContext(Context);
+  const { setMenu } = useContext(Context);
+  const location = useLocation();
 
   const handleInputChange = useCallback(({ target }) => {
     setState((prevState) => ({
@@ -17,20 +19,30 @@ function SearchBar() {
     }));
   }, []);
 
-  const handleClick = useCallback(() => {
-    fetchAPI(state);
-    // Meal:
-    //     `https://www.themealdb.com/api/json/v1/1/filter.php?i={ingrediente}`
-    //    `https://www.themealdb.com/api/json/v1/1/search.php?s={nome}`
-    //    ` https://www.themealdb.com/api/json/v1/1/search.php?f={primeira-letra}`
-    // Drinks:
-    // `www.thecocktaildb.com/api/json/v1/1/filter.php?i=${ingrediente}`
-    // `www.thecocktaildb.com/api/json/v1/1/search.php?s=${nome}`
-    // `www.thecocktaildb.com/api/json/v1/1/search.php?f=${primeira-letra}`
-    // global.alert
+  const verifyStr = async (path, key) => {
+    if (state.searchFor.length !== 1) {
+      return global.alert('Your search must have only 1 (one) character');
+    }
+    setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key));
+  };
 
-    setContext((prevState) => ({ ...prevState, searchFor, searchBy }));
-    setState(INITIAL_STATE);
+  const handleClick = useCallback(async () => {
+    const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
+    const key = location.pathname.slice(1);
+    switch (state.searchBy) {
+    case 'ingredient':
+      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/filter.php?i=${state.searchFor}`, key));
+      break;
+    case 'name':
+      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?s=${state.searchFor}`, key));
+      break;
+    case 'first-letter':
+      verifyStr(path, key);
+      break;
+    default:
+      break;
+    }
+    setState({ ...state, searchFor: '' });
   });
 
   return (
@@ -83,7 +95,7 @@ function SearchBar() {
         data-testid="exec-search-btn"
         onClick={ handleClick }
       >
-        ESEA
+        Search
       </button>
     </div>
 

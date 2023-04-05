@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [component, setComponent] = useState(false);
-  const history = useHistory();
   const [activeFilter, setActiveFilter] = useState([]);
+  const history = useHistory();
 
   const fetchMeals = async () => {
     const doze = 12;
@@ -115,7 +116,7 @@ function Recipes() {
       </label>
       {
         recipes.map((recipe, index) => (
-          <div
+          <span
             key={ index }
             data-testid={ `${index}-recipe-card` }
           >
@@ -132,7 +133,7 @@ function Recipes() {
               alt={ recipe.strMeal }
               src={ recipe.strMealThumb }
             />
-          </div>
+          </span>
         ))
       }
     </div>
@@ -166,7 +167,7 @@ function Recipes() {
       </label>
       {
         recipes.map((recipe, index) => (
-          <div
+          <span
             key={ index }
             data-testid={ `${index}-recipe-card` }
           >
@@ -180,14 +181,17 @@ function Recipes() {
               alt={ recipe.strDrink }
               src={ recipe.strDrinkThumb }
             />
-          </div>
+          </span>
         ))
       }
     </div>
   );
 
   return (
-    component ? componentsMeals : componentsDrinks
+    <>
+      { component ? componentsMeals : componentsDrinks }
+      <Footer />
+    </>
   );
 }
 

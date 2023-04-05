@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Footer from '../components/Footer';
+import {
+  mealsAPI,
+  categoriesAPI,
+  drinksAPI,
+  mealsCategories,
+  drinksCategories,
+} from '../services/recipesAPI';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
@@ -10,30 +17,18 @@ function Recipes() {
   const history = useHistory();
 
   const fetchMeals = async () => {
-    const doze = 12;
-    const api = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-    const response = await api.json();
-    const { meals } = response;
-    const util = meals.slice(0, doze);
-    setRecipes(util);
+    const meals = await mealsAPI();
+    setRecipes(meals);
     setComponent(true);
   };
   const categorieButtonMeal = async () => {
-    const cinco = 5;
-    const categoriesApi = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
-    const response = await categoriesApi.json();
-    const { meals } = response;
-    const util = meals.slice(0, cinco);
-    setCategories(util);
+    const nowCategories = await categoriesAPI();
+    setCategories(nowCategories);
   };
 
   const fetchDrinks = async () => {
-    const api = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-    const response = await api.json();
-    const { drinks } = response;
-    const doze = 12;
-    const util = drinks.slice(0, doze);
-    setRecipes(util);
+    const drinks = await drinksAPI();
+    setRecipes(drinks);
     setComponent(false);
   };
   const categorieButtonDrink = async () => {
@@ -53,7 +48,7 @@ function Recipes() {
       fetchDrinks();
       categorieButtonDrink();
     }
-  }, [history.location.pathname]);
+  }, [history]);
 
   const removeAllFilters = () => {
     if (history.location.pathname === '/meals') {
@@ -66,24 +61,17 @@ function Recipes() {
   };
 
   const handleClick = async (e) => {
-    if (activeFilter.some((element) => element === e)) {
+    const equalFilter = activeFilter.some((element) => element === e);
+    if (equalFilter) {
       removeAllFilters();
       setActiveFilter([]);
     } else if (history.location.pathname === '/meals') {
-      const doze = 12;
-      const searchCategory = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${e}`);
-      const response = await searchCategory.json();
-      const { meals } = response;
-      const util = meals.slice(0, doze);
-      setRecipes(util);
+      const setMealsCategori = await mealsCategories(e);
+      setRecipes(setMealsCategori);
       setActiveFilter([...activeFilter, e]);
     } else {
-      const doze = 12;
-      const searchCategory = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${e}`);
-      const response = await searchCategory.json();
-      const { drinks } = response;
-      const util = drinks.slice(0, doze);
-      setRecipes(util);
+      const setDrinksCategories = await drinksCategories(e);
+      setRecipes(setDrinksCategories);
       setActiveFilter([...activeFilter, e]);
     }
   };

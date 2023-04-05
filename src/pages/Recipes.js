@@ -48,8 +48,7 @@ function Recipes() {
     if (history.location.pathname === '/meals') {
       fetchMeals();
       categorieButtonMeal();
-    }
-    if (history.location.pathname === '/drinks') {
+    } else {
       fetchDrinks();
       categorieButtonDrink();
     }
@@ -59,8 +58,7 @@ function Recipes() {
     if (history.location.pathname === '/meals') {
       fetchMeals();
       categorieButtonMeal();
-    }
-    if (history.location.pathname === '/drinks') {
+    } else {
       fetchDrinks();
       categorieButtonDrink();
     }
@@ -68,28 +66,24 @@ function Recipes() {
 
   const handleClick = async (e) => {
     if (activeFilter.some((element) => element === e)) {
-      console.log(activeFilter.some((element) => element === e));
       removeAllFilters();
       setActiveFilter([]);
+    } else if (history.location.pathname === '/meals') {
+      const doze = 12;
+      const searchCategory = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${e}`);
+      const response = await searchCategory.json();
+      const { meals } = response;
+      const util = meals.slice(0, doze);
+      setRecipes(util);
+      setActiveFilter([...activeFilter, e]);
     } else {
-      if (history.location.pathname === '/meals') {
-        const doze = 12;
-        const searchCategory = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${e}`);
-        const response = await searchCategory.json();
-        const { meals } = response;
-        const util = meals.slice(0, doze);
-        setRecipes(util);
-        setActiveFilter([...activeFilter, e]);
-      }
-      if (history.location.pathname === '/drinks') {
-        const doze = 12;
-        const searchCategory = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${e}`);
-        const response = await searchCategory.json();
-        const { drinks } = response;
-        const util = drinks.slice(0, doze);
-        setRecipes(util);
-        setActiveFilter([...activeFilter, e]);
-      }
+      const doze = 12;
+      const searchCategory = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${e}`);
+      const response = await searchCategory.json();
+      const { drinks } = response;
+      const util = drinks.slice(0, doze);
+      setRecipes(util);
+      setActiveFilter([...activeFilter, e]);
     }
   };
 

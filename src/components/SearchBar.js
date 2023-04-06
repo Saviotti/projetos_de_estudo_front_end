@@ -1,7 +1,7 @@
-import { useState, useCallback, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useCallback, useContext, useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import fetchAPI from '../utils/fetchAPI';
-import { Context } from '../context/index';
+import { Context } from '../context/ContextProvider';
 
 function SearchBar() {
   const INITIAL_STATE = {
@@ -10,8 +10,23 @@ function SearchBar() {
   };
 
   const [state, setState] = useState(INITIAL_STATE);
-  const { setMenu } = useContext(Context);
+  const { menu, setMenu, page } = useContext(Context);
   const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    const key = location.pathname === '/meals' ? 'idMeal' : 'idDrink';
+    switch (menu.length) {
+    case 0:
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+      break;
+    case 1:
+      history.push(`/${page}/${menu[0][key]}`);
+      break;
+    default:
+      break;
+    }
+  }, [menu]);
 
   const handleInputChange = useCallback(({ target }) => {
     setState((prevState) => ({
@@ -23,18 +38,19 @@ function SearchBar() {
     if (state.searchFor.length !== 1) {
       return global.alert('Your search must have only 1 (one) character');
     }
-    setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key));
+    setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key) || []);
   };
 
   const handleClick = useCallback(async () => {
+    console.log('handleClick', state.searchBy, state.searchFor);
     const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
     const key = location.pathname.slice(1);
     switch (state.searchBy) {
     case 'ingredient':
-      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/filter.php?i=${state.searchFor}`, key));
+      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/filter.php?i=${state.searchFor}`, key) || []);
       break;
     case 'name':
-      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?s=${state.searchFor}`, key));
+      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?s=${state.searchFor}`, key) || []);
       break;
     case 'first-letter':
       verifyStr(path, key);

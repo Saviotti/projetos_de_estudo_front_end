@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import profileIcon from '../images/profileIcon.svg';
 import searchIcon from '../images/searchIcon.svg';
@@ -10,6 +10,7 @@ function Header() {
   const [searchBar, setSearchBar] = useState(false);
 
   const location = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
     const path = location.pathname.replace('/', '');
@@ -27,7 +28,7 @@ function Header() {
           { searchBt
               && (
                 <button
-                  data-testid="search-input"
+                  // data-testid="search-top-btn"
                   type="button"
                   onClick={ () => setSearchBar(!searchBar) }
                 >
@@ -38,16 +39,17 @@ function Header() {
                   />
                 </button>
               )}
-          <a
-            data-testid="profile-top-btn"
-            href="/profile"
+          <button
+            // data-testid="profile-top-btn"
+            type="button"
+            onClick={ () => history.push('/profile') }
           >
             <img
               data-testid="profile-top-btn"
               src={ profileIcon }
               alt="profile"
             />
-          </a>
+          </button>
 
         </div>
       </div>

@@ -1,8 +1,17 @@
-#root {
+/* #root {
   display: flex;
   flex-direction: column;
   margin: 0;
   min-height: 100vh;
+} */
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
 .meals {
@@ -17,62 +26,15 @@
   width: 100%;
 }
 
-.rocksGlass {
-  animation: shake 1s infinite ease;
-  max-height: 80vh;
-}
-
-/*
-#iceLeft {
-  animation: clink .8s infinite ease;
-  opacity: 0.6;
-  transform-origin: 36px 66px;
-}
-
-#iceRight {
-  animation: clink .8s .2s infinite ease;
-  opacity: 0.6;
-  transform-origin: 60px 78px;
-}
-*/
-
-.meals > .logo {
-  animation: shake 1.5s infinite ease;
-  color: aliceblue;
-  font-family: Montserrat , sans-serif;
-  font-size: 3em;
-  font-weight: 900;
-}
-
-@keyframes shake {
-
-  0% {
-    transform: rotate(5deg);
-  }
-
-  50% {
-    transform: rotate(-5deg);
-  }
-
-  100% {
-    transform: rotate(5deg);
-  }
-}
-
-@keyframes clink {
-
-  0% {
-    transform: rotate(-10deg);
-  }
-
-  50% {
-    transform: rotate(20deg);
-  }
-
-  100% {
-    transform: rotate(-10deg);
-  }
-}
+/* .footer {
+  background-color: rgb(225, 255, 0);
+  bottom: 0;
+  height: 5em;
+  line-height: 100px;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+} */
 
 .header {
   align-items: center;
@@ -107,7 +69,6 @@ footer {
   left: 0;
   position: fixed;
   width: 100%;
-
 }
 
 .header button {
@@ -116,8 +77,8 @@ footer {
 }
 
 .recipeCard {
-  background-color: antiquewhite;
   align-items: center;
+  background-color: antiquewhite;
   border: 1px solid black;
   border-radius: 10px;
   display: flex;

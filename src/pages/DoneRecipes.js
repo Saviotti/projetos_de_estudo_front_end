@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import clipboardCopy from 'clipboard-copy';
 import Footer from '../components/Footer';
 import shareIcon from '../images/shareIcon.svg';
 import Header from '../components/Header';
 
 export default function DoneRecipes() {
   const [dataApi, setDataApi] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     if (localStorage.doneRecipes) {
       setDataApi(JSON.parse(localStorage.getItem('doneRecipes')));
     }
   }, []);
+
+  const handleClickShareBtn = (item) => {
+    const threeSeconds = 3000;
+    clipboardCopy(`http://localhost:3000/${item.type}s/${item.id}`);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), threeSeconds);
+  };
 
   // const getDoneRecipes = setDataApi.JSON.parse(localStorage.getItem('doneRecipes'));
   // console.log(getDoneRecipes);
@@ -20,6 +29,7 @@ export default function DoneRecipes() {
       <Header />
       <h1 className="h1">DONE RECIPES</h1>
       <div className="done-recipes" />
+      {isCopied && <p>Link copied!</p>}
       <section>
         <label htmlFor="All-food-drinks">
           <label htmlFor="All">
@@ -84,7 +94,9 @@ export default function DoneRecipes() {
                 ))
               }
             </label>
-            <button>
+            <button
+              onClick={ () => handleClickShareBtn(item) }
+            >
               <img
                 data-testid={ `${index}-horizontal-share-btn` }
                 src={ shareIcon }

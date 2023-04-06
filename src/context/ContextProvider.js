@@ -7,6 +7,8 @@ function ContextProvider({ children }) {
   const [button, setButton] = useState(true);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [menu, setMenu] = useState([]);
+  const [page, setPage] = useState('meal');
 
   const contextValue = useMemo(() => ({
     button,
@@ -15,7 +17,11 @@ function ContextProvider({ children }) {
     setPassword,
     email,
     setEmail,
-  }), [button, password, email]);
+    menu,
+    setMenu,
+    page,
+    setPage,
+  }), [button, password, email, menu, page]);
 
   return (
     <Context.Provider value={ contextValue }>

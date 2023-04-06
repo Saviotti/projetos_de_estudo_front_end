@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Context } from '../context/ContextProvider';
+import Header from '../components/Header';
+import RecipeCard from '../components/RecipeCard';
 import Footer from '../components/Footer';
 import {
   mealsAPI,
@@ -10,8 +13,8 @@ import {
   buttonsDrinks,
 } from '../services/recipesAPI';
 
-function Recipes() {
-  const [recipes, setRecipes] = useState([]);
+export default function Recipes() {
+  const { menu, setMenu, setPage } = useContext(Context);
   const [categories, setCategories] = useState([]);
   const [component, setComponent] = useState(false);
   const [activeFilter, setActiveFilter] = useState([]);
@@ -19,40 +22,49 @@ function Recipes() {
 
   const fetchMeals = async () => {
     const meals = await mealsAPI();
-    setRecipes(meals);
+    setMenu(meals);
     setComponent(true);
   };
   const categorieButtonMeal = async () => {
     const setButtons = await buttonsMeals();
+    console.log('setbutton');
     setCategories(setButtons);
   };
 
   const fetchDrinks = async () => {
     const drinks = await drinksAPI();
-    setRecipes(drinks);
+    setMenu(drinks);
     setComponent(false);
   };
+
   const categorieButtonDrink = async () => {
     const setButtons = await buttonsDrinks();
-    setCategories(setButtons);
+    console.log('setbutton');
+    setCategories(() => setButtons);
   };
 
   useEffect(() => {
     if (history.location.pathname === '/meals') {
       fetchMeals();
+      setComponent(true);
       categorieButtonMeal();
+      setPage('meals');
     } else {
       fetchDrinks();
+      setComponent(false);
       categorieButtonDrink();
+      setPage('drinks');
     }
   }, [history]);
 
   const removeAllFilters = () => {
     if (history.location.pathname === '/meals') {
       fetchMeals();
+      setComponent(true);
       categorieButtonMeal();
     } else {
       fetchDrinks();
+      setComponent(false);
       categorieButtonDrink();
     }
   };
@@ -64,11 +76,11 @@ function Recipes() {
       setActiveFilter([]);
     } else if (history.location.pathname === '/meals') {
       const setMealsCategori = await mealsCategories(e);
-      setRecipes(setMealsCategori);
+      setMenu(setMealsCategori);
       setActiveFilter([...activeFilter, e]);
     } else {
       const setDrinksCategories = await drinksCategories(e);
-      setRecipes(setDrinksCategories);
+      setMenu(setDrinksCategories);
       setActiveFilter([...activeFilter, e]);
     }
   };
@@ -99,25 +111,13 @@ function Recipes() {
           All
         </button>
       </label>
-      {
-        recipes.map((recipe, index) => (
-          <span
-            key={ index }
-            data-testid={ `${index}-recipe-card` }
-          >
-            <h2
-              data-testid={ `${index}-card-name` }
-            >
-              { recipe.strMeal }
-            </h2>
-            <img
-              data-testid={ `${index}-card-img` }
-              alt={ recipe.strMeal }
-              src={ recipe.strMealThumb }
-            />
-          </span>
-        ))
-      }
+      <div className="recipes">
+        {
+          menu.map((recipe, index) => (
+            <RecipeCard key={ index } recipe={ recipe } index={ index } />
+          ))
+        }
+      </div>
     </div>
   );
 
@@ -147,36 +147,21 @@ function Recipes() {
           All
         </button>
       </label>
-      {
-        recipes.map((recipe, index) => (
-          <span
-            key={ index }
-            data-testid={ `${index}-recipe-card` }
-          >
-            <h2
-              data-testid={ `${index}-card-name` }
-            >
-              { recipe.strDrink }
-            </h2>
-            <img
-              data-testid={ `${index}-card-img` }
-              alt={ recipe.strDrink }
-              src={ recipe.strDrinkThumb }
-            />
-          </span>
-        ))
-      }
+      <div className="recipes">
+        {
+          menu.map((recipe, index) => (
+            <RecipeCard key={ index } recipe={ recipe } index={ index } />
+          ))
+        }
+      </div>
     </div>
   );
 
   return (
     <>
+      <Header />
       { component ? componentsMeals : componentsDrinks }
       <Footer />
     </>
   );
 }
-
-export default Recipes;
-
-// Ainda faltam testes para a questão 20 passar //

@@ -83,10 +83,9 @@ export default function DoneRecipes() {
                 ))
               }
             </label>
-            <button
-              data-testid={ `${index}-horizontal-share-btn` }
-            >
+            <button>
               <img
+                data-testid={ `${index}-horizontal-share-btn` }
                 src={ shareIcon }
                 alt="share-button"
               />

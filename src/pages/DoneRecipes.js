@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clipboardCopy from 'clipboard-copy';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import shareIcon from '../images/shareIcon.svg';
 import Header from '../components/Header';
@@ -7,6 +8,8 @@ import Header from '../components/Header';
 export default function DoneRecipes() {
   const [dataApi, setDataApi] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
+
+  // const history = useHistory();
 
   useEffect(() => {
     if (localStorage.doneRecipes) {
@@ -61,39 +64,42 @@ export default function DoneRecipes() {
       <section>
         {dataApi.length > 0 && dataApi.map((item, index) => (
           <div key={ index }>
-            <label htmlFor="image-card">
-              <img
-                data-testid={ `${index}-horizontal-image` }
-                alt="name"
-                src={ item.image }
-              />
-              <p
-                data-testid={ `${index}-horizontal-top-text` }
-              >
-                {`${item.nationality} - ${item.category}`}
-                {item.alcoholicOrNot}
-              </p>
-              <p
-                data-testid={ `${index}-horizontal-name` }
-              >
-                {item.name}
-              </p>
-              <p
-                data-testid={ `${index}-horizontal-done-date` }
-              >
-                {item.doneDate}
-              </p>
-              {
-                item.tags.map((tag) => (
-                  <span
-                    key={ tag }
-                    data-testid={ `${index}-${tag}-horizontal-tag` }
-                  >
-                    {tag}
-                  </span>
-                ))
-              }
-            </label>
+            <Link to={ `/${item.type}s/${item.id}` }>
+              <label htmlFor="image-card">
+                <img
+                  data-testid={ `${index}-horizontal-image` }
+                  alt="name"
+                  src={ item.image }
+                  width="140px"
+                />
+                <p
+                  data-testid={ `${index}-horizontal-top-text` }
+                >
+                  {`${item.nationality} - ${item.category}`}
+                  {item.alcoholicOrNot}
+                </p>
+                <p
+                  data-testid={ `${index}-horizontal-name` }
+                >
+                  {item.name}
+                </p>
+                <p
+                  data-testid={ `${index}-horizontal-done-date` }
+                >
+                  {item.doneDate}
+                </p>
+                {
+                  item.tags.map((tag) => (
+                    <span
+                      key={ tag }
+                      data-testid={ `${index}-${tag}-horizontal-tag` }
+                    >
+                      {tag}
+                    </span>
+                  ))
+                }
+              </label>
+            </Link>
             <button
               onClick={ () => handleClickShareBtn(item) }
             >

@@ -61,6 +61,7 @@ export default function DoneRecipes() {
                 data-testid={ `${index}-horizontal-top-text` }
               >
                 {`${item.nationality} - ${item.category}`}
+                {item.alcoholicOrNot}
               </p>
               <p
                 data-testid={ `${index}-horizontal-name` }

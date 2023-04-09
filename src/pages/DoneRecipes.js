@@ -9,8 +9,6 @@ export default function DoneRecipes() {
   const [dataApi, setDataApi] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
 
-  // const history = useHistory();
-
   useEffect(() => {
     if (localStorage.doneRecipes) {
       setDataApi(JSON.parse(localStorage.getItem('doneRecipes')));
@@ -24,8 +22,14 @@ export default function DoneRecipes() {
     setTimeout(() => setIsCopied(false), threeSeconds);
   };
 
-  // const getDoneRecipes = setDataApi.JSON.parse(localStorage.getItem('doneRecipes'));
-  // console.log(getDoneRecipes);
+  const handleFilter = (type) => {
+    const filter = JSON.parse(localStorage.getItem('doneRecipes'));
+    setDataApi(filter.filter((e) => e.type === type));
+  };
+
+  const handleClickAll = () => {
+    setDataApi(JSON.parse(localStorage.getItem('doneRecipes')));
+  };
 
   return (
     <div>
@@ -39,6 +43,7 @@ export default function DoneRecipes() {
             <button
               data-testid="filter-by-all-btn"
               type="button"
+              onClick={ handleClickAll }
             >
               All
             </button>
@@ -47,14 +52,17 @@ export default function DoneRecipes() {
             <button
               data-testid="filter-by-meal-btn"
               type="button"
+              onClick={ () => handleFilter('meal') }
             >
-              Food
+              Meals
             </button>
           </label>
           <label htmlFor="Drinks">
             <button
               data-testid="filter-by-drink-btn"
               type="button"
+              onClick={ () => handleFilter('drink') }
+
             >
               Drinks
             </button>

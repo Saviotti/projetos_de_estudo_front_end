@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 const INITIAL_STATE = {
   searchInput: '',
-  searchRadio: 'ingredient',
+  searchRadio: '',
 };
 
 export default function SearchBar() {
@@ -75,7 +75,6 @@ export default function SearchBar() {
           id="ingredient-search-radio"
           type="radio"
           name="searchRadio"
-          checked
           value="ingredient"
           onChange={ handleInputChange }
         />

@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react';
 
 const INITIAL_STATE = {
-  searchFor: '',
-  searchBy: 'ingredient',
+  searchInput: '',
+  searchRadio: 'ingredient',
 };
 
 export default function SearchBar() {
+  // const { menu, setMenu } = useMenu();
   const [state, setState] = useState(INITIAL_STATE);
-  // const { menu, setMenu, page } = useContext(Context);
+  const { searchInput } = state;
   // const location = useLocation();
   // const history = useHistory();
 
@@ -36,7 +37,8 @@ export default function SearchBar() {
   //   setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key) || []);
   // };
 
-  const handleClick = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     // console.log('handleClick', state.searchBy, state.searchFor);
     // const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
     // const key = location.pathname.slice(1);
@@ -57,58 +59,52 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="searchBar">
+    <form onSubmit={ handleSubmit } className="searchBar">
       <input
         data-testid="search-input"
-        value={ state.searchFor }
         placeholder="Search"
         type="text"
+        value={ searchInput }
         onChange={ handleInputChange }
-        name="searchFor"
+        name="searchInput"
       />
-      <div>
-        <label htmlFor="ingredient">
-          Ingredients
-          <input
-            data-testid="ingredient-search-radio"
-            type="radio"
-            name="searchBy"
-            value="ingredient"
-            id="ingredient"
-            onChange={ handleInputChange }
-          />
-        </label>
-        <label htmlFor="name">
-          Name
-          <input
-            data-testid="name-search-radio"
-            type="radio"
-            name="searchBy"
-            value="name"
-            id="name"
-            onChange={ handleInputChange }
-          />
-        </label>
-        <label htmlFor="first-letter">
-          First letter
-          <input
-            data-testid="first-letter-search-radio"
-            type="radio"
-            name="searchBy"
-            value="first-letter"
-            id="first-letter"
-            onChange={ handleInputChange }
-          />
-        </label>
-      </div>
-      <button
-        type="button"
-        data-testid="exec-search-btn"
-        onClick={ handleClick }
-      >
+      <label htmlFor="ingredient-search-radio">
+        Ingredients
+        <input
+          data-testid="ingredient-search-radio"
+          id="ingredient-search-radio"
+          type="radio"
+          name="searchRadio"
+          checked
+          value="ingredient"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <label htmlFor="name-search-radio">
+        Name
+        <input
+          data-testid="name-search-radio"
+          id="name-search-radio"
+          type="radio"
+          name="searchRadio"
+          value="name"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <label htmlFor="first-letter-search-radio">
+        First letter
+        <input
+          data-testid="first-letter-search-radio"
+          id="first-letter-search-radio"
+          type="radio"
+          name="searchRadio"
+          value="firstLetter"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <button type="submit" data-testid="exec-search-btn">
         Search
       </button>
-    </div>
-
+    </form>
   );
 }

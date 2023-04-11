@@ -1,16 +1,16 @@
 import React from 'react';
 import Routes from './Routes';
-import ContextProvider from './context/ContextProvider';
-import Header from './components/Header';
 import Footer from './components/Footer';
+import Header from './components/Header';
+import MenuProvider from './context/MenuProvider';
 
 function App() {
   return (
-    <ContextProvider>
+    <MenuProvider>
       <Header />
       <Routes />
       <Footer />
-    </ContextProvider>
+    </MenuProvider>
   );
 }
 

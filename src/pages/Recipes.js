@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '../components/Button';
 import Footer from '../components/Footer';
@@ -19,20 +19,23 @@ export default function Recipes() {
 
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [currentFilter, setCurrentFilter] = useState(null);
+  const [currentFilter, setCurrentFilter] = useState('');
 
   useEffect(() => {
-    const endpoint = currentFilter
-      ? recipesFilteredByCategoryUrl(recipesType, currentFilter)
+    fetchApi(setRecipes, recipesUrl(recipesType), RECIPES_QUANTITY);
+    fetchApi(setCategories, recipesCategoriesUrl(recipesType), CATEGORIES_QUANTITY);
+  }, [recipesType]);
+
+  const handleCategoryClick = useCallback((category) => {
+    const newCategory = category === currentFilter ? '' : category;
+    const endpoint = newCategory
+      ? recipesFilteredByCategoryUrl(recipesType, newCategory)
       : recipesUrl(recipesType);
 
     fetchApi(setRecipes, endpoint, RECIPES_QUANTITY);
-    fetchApi(setCategories, recipesCategoriesUrl(recipesType), CATEGORIES_QUANTITY);
-  }, [recipesType, currentFilter]);
 
-  const handleCategoryClick = (category) => {
-    setCurrentFilter(category === currentFilter ? null : category);
-  };
+    setCurrentFilter(newCategory);
+  }, [currentFilter, recipesType]);
 
   const recipesList = recipes.map((recipe, index) => (
     <li key={ recipe.strMeal || recipe.strDrink }>

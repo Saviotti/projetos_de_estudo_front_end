@@ -1,131 +1,161 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
-// import { copy } from 'fs-extra';
+import userEvent from '@testing-library/user-event';
+import copy from 'clipboard-copy';
 import DoneRecipes from '../pages/DoneRecipes';
 import renderWithRouter from '../services/renderWithRouter';
 
-// const imgId = '0-horizontal-image';
-// const nameId = '0-horizontal-name';
-// const btnId = '0-horizontal-share-btn';
+const fixClipboardCopy = 'Arrumando problema com o clipboard-copy';
+jest.mock('clipboard-copy', () => jest.fn().mockImplementation((input) => {
+  if (input === fixClipboardCopy) {
+    throw new Error(input);
+  }
+  return true;
+}));
+
+const doneRecipes = [
+  {
+    id: '52771',
+    type: 'meal',
+    nationality: 'Italian',
+    category: 'Vegetarian',
+    alcoholicOrNot: '',
+    name: 'Spicy Arrabiata Penne',
+    image: 'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+    doneDate: '23/06/2020',
+    tags: ['Pasta', 'Curry'],
+  },
+  {
+    id: '178319',
+    type: 'drink',
+    nationality: '',
+    category: 'Cocktail',
+    alcoholicOrNot: 'Alcoholic',
+    name: 'Aquamarine',
+    image: 'https://www.thecocktaildb.com/images/media/drink/zvsre31572902738.jpg',
+    doneDate: '23/06/2020',
+    tags: [],
+  },
+];
+
+const allBtn = 'filter-by-all-btn';
+const imgId = '0-horizontal-image';
+const nameId = '0-horizontal-name';
+const shareBtnId = '0-horizontal-share-btn';
+const imgIdDrinks = '1-horizontal-image';
+const nameIdDrinks = '1-horizontal-name';
+const shareBtnIdDrinks = '1-horizontal-share-btn';
 
 describe('Testes do componente DoneRecipes', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem('doneRecipes', JSON.stringify(doneRecipes));
+  });
+
   it('Verifica se os botões estão sendo renderizados na tela', () => {
     renderWithRouter(<DoneRecipes />);
 
-    const allBtn = screen.getByTestId('filter-by-all-btn');
     const mealsBtn = screen.getByTestId('filter-by-meal-btn');
     const drinksBtn = screen.getByTestId('filter-by-drink-btn');
     const titleText = screen.getByText(/DONE RECIPES/i);
+    const allBtn1 = screen.getByTestId(allBtn);
 
-    expect(allBtn).toBeInTheDocument();
+    expect(allBtn1).toBeInTheDocument();
     expect(mealsBtn).toBeInTheDocument();
     expect(drinksBtn).toBeInTheDocument();
     expect(titleText).toBeInTheDocument();
   });
-  it('Testes dentro do map DataApi de meals', () => {
-    // Não estou conseguindo renderizar as informações dentro do map dataApi.
-  //   renderWithRouter(<DoneRecipes />);
+  it('Testa os todos os itens dentro do api de meals e drinks', async () => {
+    renderWithRouter(<DoneRecipes />);
 
-    //   const img = screen.getByTestId(imgId);
-    //   const category = screen.getByTestId('1-horizontal-top-text');
-    //   const name = screen.getByTestId(nameId);
-    //   const date = screen.getByTestId('1-horizontal-done-date');
-    //   const tag1 = screen.getByTestId('1-feijão-horizontal-tag');
-    //   const tag2 = screen.getByTestId('1-caseira-horizontal-tag');
-    //   const btn = screen.getByTestId(btnId);
-    //   const linkCopiedText = screen.getByText(/link copied!/i);
+    const img = await screen.findByTestId(imgId);
+    const name = await screen.getByTestId(nameId);
+    const btn = await screen.getByTestId(shareBtnId);
+    const category = await screen.getByTestId('0-horizontal-top-text');
+    const date = await screen.getByTestId('0-horizontal-done-date');
+    const tag1 = await screen.getByTestId('0-Curry-horizontal-tag');
+    const tag2 = await screen.getByTestId('0-Pasta-horizontal-tag');
+    const imgDrinks = await screen.findByTestId(imgIdDrinks);
+    const nameDrinks = await screen.getByTestId(nameIdDrinks);
+    const drinksBtn = await screen.getByTestId(shareBtnIdDrinks);
+    const drinkCategory = await screen.getByTestId('1-horizontal-top-text');
+    const drinkDate = await screen.getByTestId('1-horizontal-done-date');
+    // const drinkTag1 = await screen.getByTestId('1-Curry-horizontal-tag');
+    // const drinktag2 = await screen.getByTestId('1-Pasta-horizontal-tag');
 
-  //   expect(img).toBeInTheDocument();
-  //   expect(category).toBeInTheDocument();
-  //   expect(name).toBeInTheDocument();
-  //   expect(date).toBeInTheDocument();
-  //   expect(tag1).toBeInTheDocument();
-  //   expect(tag2).toBeInTheDocument();
-  //   expect(btn).toBeInTheDocument();
-  //   expect(linkCopiedText).toBeInTheDocument();
+    expect(img).toBeInTheDocument();
+    expect(name).toBeInTheDocument();
+    expect(btn).toBeInTheDocument();
+    expect(category).toBeInTheDocument();
+    expect(date).toBeInTheDocument();
+    expect(tag1).toBeInTheDocument();
+    expect(tag2).toBeInTheDocument();
+
+    expect(imgDrinks).toBeInTheDocument();
+    expect(nameDrinks).toBeInTheDocument();
+    expect(drinksBtn).toBeInTheDocument();
+    expect(drinkCategory).toBeInTheDocument();
+    expect(drinkDate).toBeInTheDocument();
+    // expect(drinkTag1).not.toBeInTheDocument();
+    // expect(drinktag2).not.toBeInTheDocument();
   });
-  // it('Testes dentro do map DataApi de drinks', () => {
-  //   renderWithRouter(<DoneRecipes />);
+  it('Testa se ao clicar na imagem, é redirecionado para a página de meals', async () => {
+    const { history } = renderWithRouter(<DoneRecipes />, '/done-recipes');
 
-  //   const img = screen.getByTestId(imgId);
-  //   const alcool = screen.getByTestId('1-horizontal-top-text');
-  //   const name = screen.getByTestId(nameId);
-  //   const date = screen.getByTestId('1-horizontal-done-date');
-  //   const btn = screen.getByTestId(btnId);
-  //   const share = screen.queryByText(/link copied!/i);
+    const img = await screen.getByTestId(imgId);
+    userEvent.click(img);
 
-  //   expect(img).toBeInTheDocument();
-  //   expect(alcool).toBeInTheDocument();
-  //   expect(name).toBeInTheDocument();
-  //   expect(date).toBeInTheDocument();
-  //   expect(btn).toBeInTheDocument();
-  //   expect(share).not.toBeInTheDocument();
-  // });
-  // it('redireciona para página certa', () => {
-  //   const { history } = renderWithRouter(<DoneRecipes />, '/done-recipes');
+    const { pathname } = history.location;
+    expect(pathname).toBe('/meals/52771');
+  });
+  it('Testa a função do filtro para meal', async () => {
+    renderWithRouter(<DoneRecipes />);
 
-  //   const img = screen.getByTestId(imgId);
-  //   userEvent.click(img);
+    const mealBtn = await screen.getByTestId('filter-by-meal-btn');
 
-  //   const { pathname } = history.location;
-  //   expect(pathname).toBe('/drinks/178319');
-  // });
-  // it('redireciona para página certa', () => {
-  //   const fn = jest.fn(() => {});
-  //   const { history } = renderWithRouter(
-  //     <DoneRecipes func={ fn } />,
-  //     '/done-recipes',
-  //   );
+    userEvent.click(mealBtn);
+    const img = await screen.getAllByTestId(/-horizontal-image/i);
 
-  //   const btn = screen.getByTestId(btnId);
-  //   userEvent.click(btn);
+    expect(img.length).toBe(1);
+  });
+  it('Testa a função do filtro para drink', async () => {
+    renderWithRouter(<DoneRecipes />);
 
-  //   expect(fn).toHaveBeenCalled();
+    const btnDrinks = await screen.getByTestId('filter-by-drink-btn');
 
-  //   const name = screen.getByTestId(nameId);
-  //   userEvent.click(name);
+    userEvent.click(btnDrinks);
+    const img = await screen.getAllByTestId(/-horizontal-image/i);
 
-  //   const { pathname } = history.location;
-  //   expect(pathname).toBe('/drinks/178319');
-  // });
-  // it('receitas na tela', () => {
-  //   const img = screen.queryByTestId('0-horizontal-image');
-  //   expect(img).toBeInTheDocument();
-  // });
-  // it('função do filtro meal', () => {
-  //   const btnMeals = screen.getByTestId('filter-by-meal-btn');
+    expect(img.length).toBe(1);
+  });
+  it('Testa a função do filtro para o botão All', async () => {
+    renderWithRouter(<DoneRecipes />);
 
-  //   userEvent.click(btnMeals);
-  //   const img = screen.getAllByTestId(/-horizontal-image/i);
+    const allBtn2 = screen.getByTestId(allBtn);
 
-  //   expect(img.length).toBe(1);
-  // });
-  // it('função do filtro drink', () => {
-  //   const btnDrinks = screen.getByTestId('filter-by-drink-btn');
+    userEvent.click(allBtn2);
+    const img = await screen.getAllByTestId(/-horizontal-image/i);
 
-  //   userEvent.click(btnDrinks);
-  //   const img = screen.getAllByTestId(/-horizontal-image/i);
+    expect(img.length).toBe(2);
+  });
+  it('Testa se ao clicar no ícone de compartilhamento, o texto Link copied! é copiado e renderizado na tela', async () => {
+    renderWithRouter(<DoneRecipes />);
 
-  //   expect(img.length).toBe(1);
-  // });
-  // it('função do filtro meal', () => {
-  //   const btnAll = screen.getByTestId('filter-by-all-btn');
+    const btn = await screen.getByTestId(shareBtnIdDrinks);
+    userEvent.click(btn);
+    expect(copy).toHaveBeenCalled();
 
-  //   userEvent.click(btnAll);
-  //   const img = screen.getAllByTestId(/-horizontal-image/i);
+    const share = await screen.getByText(/link copied!/i);
+    expect(share).toBeInTheDocument();
+  });
+  it('Testa se o localStorage traz as informações da chave doneRecipes toda vez que a página atualiza', async () => {
+    // Ver como fazer isso.
+    renderWithRouter(<DoneRecipes />);
 
-  //   expect(img.length).toBe(2);
-  // });
-  // it('função de share funciona', () => {
-  //   const shareBtnId = '0-horizontal-share-btn';
-  //   const btn = screen.getByTestId(shareBtnId);
+    document.location.reload();
 
-  //   userEvent.click(btn);
+    const data = JSON.parse(localStorage.getItem('doneRecipes'));
 
-  //   expect(copy).toHaveBeenCalled();
-
-  //   const share = screen.getByText(/link copied!/i);
-  //   expect(share).toBeInTheDocument();
-  // });
+    expect(data).toEqual(doneRecipes);
+  });
 });

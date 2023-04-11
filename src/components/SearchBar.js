@@ -42,7 +42,6 @@ function SearchBar() {
   };
 
   const handleClick = useCallback(async () => {
-    console.log('handleClick', state.searchBy, state.searchFor);
     const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
     const key = location.pathname.slice(1);
     switch (state.searchBy) {

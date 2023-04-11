@@ -11,7 +11,7 @@ function Routes() {
     <Switch>
       {/* <Route exact path="/" component={ Login } /> */}
       <Route path="/meals/:id" component={ RecipeDetails } />
-      <Route path="/meals" component={ Recipes } />
+      <Route exact path="/meals" component={ Recipes } />
       <Route path="/drinks/:id" component={ RecipeDetails } />
       <Route path="/drinks" component={ Recipes } />
       <Route path="/profile" component={ Profile } />

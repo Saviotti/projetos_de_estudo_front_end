@@ -9,8 +9,6 @@ export default function RecipeCard(props) {
   const { strMeal, strMealThumb, idMeal } = recipe;
   const id = idDrink || idMeal;
   const { page } = useContext(Context);
-  console.log(recipe);
-  console.log(index);
 
   return (
     <Link to={ `/${page}/${id}` }>

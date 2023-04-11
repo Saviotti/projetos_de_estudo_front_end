@@ -1,166 +1,69 @@
-import { useEffect, useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Context } from '../context/ContextProvider';
-import Header from '../components/Header';
-import RecipeCard from '../components/RecipeCard';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import Button from '../components/Button';
 import Footer from '../components/Footer';
+import RecipeCard from '../components/RecipeCard';
 import {
-  mealsAPI,
-  buttonsMeals,
-  drinksAPI,
-  mealsCategories,
-  drinksCategories,
-  buttonsDrinks,
-} from '../services/recipesAPI';
+  recipesCategoriesUrl,
+  recipesFilteredByCategoryUrl,
+  recipesUrl,
+} from '../utils/endpoints';
+import { fetchApi } from '../utils/fetchAPI';
+
+const RECIPES_QUANTITY = 12;
+const CATEGORIES_QUANTITY = 5;
 
 export default function Recipes() {
-  const { menu, setMenu, setPage } = useContext(Context);
+  const { pathname } = useLocation();
+  const recipesType = pathname.includes('meal') ? 'meal' : 'cocktail';
+
+  const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [component, setComponent] = useState(false);
-  const [activeFilter, setActiveFilter] = useState([]);
-  const history = useHistory();
-
-  const fetchMeals = async () => {
-    const meals = await mealsAPI();
-    setMenu(meals);
-    setComponent(true);
-  };
-  const categorieButtonMeal = async () => {
-    const setButtons = await buttonsMeals();
-    console.log('setbutton');
-    setCategories(setButtons);
-  };
-
-  const fetchDrinks = async () => {
-    const drinks = await drinksAPI();
-    setMenu(drinks);
-    setComponent(false);
-  };
-
-  const categorieButtonDrink = async () => {
-    const setButtons = await buttonsDrinks();
-    console.log('setbutton');
-    setCategories(() => setButtons);
-  };
+  const [currentFilter, setCurrentFilter] = useState(null);
 
   useEffect(() => {
-    if (history.location.pathname === '/meals') {
-      fetchMeals();
-      setComponent(true);
-      categorieButtonMeal();
-      setPage('meals');
-    } else {
-      fetchDrinks();
-      setComponent(false);
-      categorieButtonDrink();
-      setPage('drinks');
-    }
-  }, [history]);
+    const endpoint = currentFilter
+      ? recipesFilteredByCategoryUrl(recipesType, currentFilter)
+      : recipesUrl(recipesType);
 
-  const removeAllFilters = () => {
-    if (history.location.pathname === '/meals') {
-      fetchMeals();
-      setComponent(true);
-      categorieButtonMeal();
-    } else {
-      fetchDrinks();
-      setComponent(false);
-      categorieButtonDrink();
-    }
+    fetchApi(setRecipes, endpoint, RECIPES_QUANTITY);
+    fetchApi(setCategories, recipesCategoriesUrl(recipesType), CATEGORIES_QUANTITY);
+  }, [recipesType, currentFilter]);
+
+  const handleCategoryClick = (category) => {
+    setCurrentFilter(category === currentFilter ? null : category);
   };
 
-  const handleClick = async (e) => {
-    const equalFilter = activeFilter.some((element) => element === e);
-    if (equalFilter) {
-      removeAllFilters();
-      setActiveFilter([]);
-    } else if (history.location.pathname === '/meals') {
-      const setMealsCategori = await mealsCategories(e);
-      setMenu(setMealsCategori);
-      setActiveFilter([...activeFilter, e]);
-    } else {
-      const setDrinksCategories = await drinksCategories(e);
-      setMenu(setDrinksCategories);
-      setActiveFilter([...activeFilter, e]);
-    }
-  };
+  const recipesList = recipes.map((recipe, index) => (
+    <li key={ recipe.strMeal || recipe.strDrink }>
+      <RecipeCard recipe={ recipe } index={ index } />
+    </li>
+  ));
 
-  const componentsMeals = (
-    <div>
-      <label htmlFor="buttons">
-        {
-          categories.map((element, index) => (
-            <button
-              key={ index }
-              data-testid={ `${element.strCategory}-category-filter` }
-              name="buttons"
-              type="button"
-              onClick={ () => handleClick(element.strCategory) }
-            >
-              { element.strCategory }
-            </button>
-          ))
-        }
-        {' '}
-        <button
-          data-testid="All-category-filter"
-          type="button"
-          name="buttons"
-          onClick={ removeAllFilters }
-        >
-          All
-        </button>
-      </label>
-      <div className="recipes">
-        {
-          menu.map((recipe, index) => (
-            <RecipeCard key={ index } recipe={ recipe } index={ index } />
-          ))
-        }
-      </div>
-    </div>
-  );
-
-  const componentsDrinks = (
-    <div>
-      <label htmlFor="buttons">
-        {
-          categories.map((element, index) => (
-            <button
-              key={ index }
-              data-testid={ `${element.strCategory}-category-filter` }
-              name="buttons"
-              type="button"
-              onClick={ () => handleClick(element.strCategory) }
-            >
-              { element.strCategory }
-            </button>
-          ))
-        }
-        {' '}
-        <button
-          data-testid="All-category-filter"
-          type="button"
-          name="buttons"
-          onClick={ removeAllFilters }
-        >
-          All
-        </button>
-      </label>
-      <div className="recipes">
-        {
-          menu.map((recipe, index) => (
-            <RecipeCard key={ index } recipe={ recipe } index={ index } />
-          ))
-        }
-      </div>
-    </div>
-  );
+  const categoriesList = categories.map(({ strCategory }) => (
+    <li key={ strCategory }>
+      <Button
+        id={ `${strCategory}-category-filter` }
+        label={ strCategory }
+        onClick={ () => handleCategoryClick(strCategory) }
+      />
+    </li>
+  ));
 
   return (
     <>
-      <Header />
-      { component ? componentsMeals : componentsDrinks }
+      {/* <Header /> */}
+      <ul>
+        <li>
+          <Button
+            id="All-category-filter"
+            label="All"
+            onClick={ () => handleCategoryClick('') }
+          />
+        </li>
+        { categoriesList.length > 0 && categoriesList }
+      </ul>
+      <ol>{ recipes.length > 0 && recipesList }</ol>
       <Footer />
     </>
   );

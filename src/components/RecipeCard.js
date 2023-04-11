@@ -1,31 +1,21 @@
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Context } from '../context/ContextProvider';
+import { Link } from 'react-router-dom';
 
-export default function RecipeCard(props) {
-  const { recipe, index } = props;
-  const { strDrink, strDrinkThumb, idDrink } = recipe;
-  const { strMeal, strMealThumb, idMeal } = recipe;
-  const id = idDrink || idMeal;
-  const { page } = useContext(Context);
-  console.log(recipe);
-  console.log(index);
+export default function RecipeCard({ recipe, index }) {
+  const { strDrink, strDrinkThumb, idDrink, strMeal, strMealThumb, idMeal } = recipe;
 
   return (
-    <Link to={ `/${page}/${id}` }>
-      <div className="recipeCard" data-testid={ `${index}-recipe-card` }>
-        <h2
-          data-testid={ `${index}-card-name` }
-        >
-          { strDrink || strMeal }
-        </h2>
-        <img
-          data-testid={ `${index}-card-img` }
-          alt={ strDrink || strMeal }
-          src={ strDrinkThumb || strMealThumb }
-        />
-      </div>
+    <Link
+      to={ `/${idMeal ? 'meals' : 'drinks'}/${idDrink || idMeal}` }
+      className="recipeCard"
+      data-testid={ `${index}-recipe-card` }
+    >
+      <h3 data-testid={ `${index}-card-name` }>{ strDrink || strMeal }</h3>
+      <img
+        data-testid={ `${index}-card-img` }
+        alt={ strDrink || strMeal }
+        src={ strDrinkThumb || strMealThumb }
+      />
     </Link>
   );
 }

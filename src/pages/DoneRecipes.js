@@ -1,17 +1,11 @@
 import clipboardCopy from 'clipboard-copy';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import shareIcon from '../images/shareIcon.svg';
 
 export default function DoneRecipes() {
-  const [dataApi, setDataApi] = useState([]);
+  const [dataApi, setDataApi] = useState(JSON.parse(localStorage.getItem('doneRecipes')));
   const [isCopied, setIsCopied] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.doneRecipes) {
-      setDataApi(JSON.parse(localStorage.getItem('doneRecipes')));
-    }
-  }, []);
 
   const handleClickShareBtn = (item) => {
     const threeSeconds = 3000;

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '../components/Button';
-import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
 import {
   recipesCategoriesUrl,
@@ -55,7 +54,6 @@ export default function Recipes() {
 
   return (
     <>
-      {/* <Header /> */}
       <ul>
         <li>
           <Button
@@ -67,7 +65,6 @@ export default function Recipes() {
         { categoriesList.length > 0 && categoriesList }
       </ul>
       <ol>{ recipes.length > 0 && recipesList }</ol>
-      <Footer />
     </>
   );
 }

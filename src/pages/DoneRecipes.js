@@ -34,7 +34,6 @@ export default function DoneRecipes() {
   return (
     <div>
       <Header />
-      <h1 className="h1">DONE RECIPES</h1>
       <div className="done-recipes" />
       {isCopied && <p>Link copied!</p>}
       <section>

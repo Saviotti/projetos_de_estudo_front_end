@@ -1,7 +1,6 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryHistory } from 'history';
 import App from '../App';
 import renderWithRouter from '../services/renderWithRouter';
 import { waterSearch, currySearch, aSearch } from './mocks';

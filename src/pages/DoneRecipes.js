@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
 import clipboardCopy from 'clipboard-copy';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
 import shareIcon from '../images/shareIcon.svg';
-import Header from '../components/Header';
+import { getDataFromLocalStorage } from '../utils/getDataFromLocalStorage';
 
 export default function DoneRecipes() {
-  const [dataApi, setDataApi] = useState(JSON.parse(localStorage.getItem('doneRecipes')));
+  const [dataApi, setDataApi] = useState(getDataFromLocalStorage('doneRecipes'));
   const [isCopied, setIsCopied] = useState(false);
 
   const handleClickShareBtn = (item) => {
@@ -27,7 +26,6 @@ export default function DoneRecipes() {
 
   return (
     <div>
-      <Header />
       <h1 className="h1">DONE RECIPES</h1>
       <div className="done-recipes" />
       {isCopied && <p>Link copied!</p>}
@@ -114,7 +112,6 @@ export default function DoneRecipes() {
           </div>
         ))}
       </section>
-      <Footer />
     </div>
   );
 }

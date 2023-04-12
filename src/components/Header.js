@@ -1,61 +1,46 @@
-import { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import SearchBar from './SearchBar';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import profileIcon from '../images/profileIcon.svg';
 import searchIcon from '../images/searchIcon.svg';
+import SearchBar from './SearchBar';
 
-function Header() {
-  const [searchBt, setSearchBt] = useState(false);
-  const [title, setTitle] = useState('');
-  const [searchBar, setSearchBar] = useState(false);
+const PAGES_TO_RENDER_HEADER = [
+  '/meals',
+  '/drinks',
+  '/profile',
+  '/done-recipes',
+  '/favorite-recipes',
+];
 
-  const location = useLocation();
-  const history = useHistory();
+export default function Header() {
+  const { pathname } = useLocation();
+  const renderHeader = PAGES_TO_RENDER_HEADER.some((page) => page === pathname);
 
-  useEffect(() => {
-    const path = location.pathname.replace('/', '');
-    setSearchBt(['meals', 'drinks'].includes(path));
-    const str = path.split('-');
-    setTitle(str.map((palavra) => palavra.charAt(0)
-      .toUpperCase() + palavra.slice(1)).join(' '));
-  }, [location]);
+  const [renderSeachBar, setRenderSeachBar] = useState(false);
+
+  if (!renderHeader) return null;
+
+  const renderSearchButton = ['/meals', '/drinks'].some((page) => page === pathname);
+
+  const strTitle = pathname.replace('/', '').replace('-', ' ');
+  const title = strTitle.split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  const searchButton = (
+    <button type="button" onClick={ () => setRenderSeachBar(!renderSeachBar) }>
+      <img data-testid="search-top-btn" src={ searchIcon } alt="search" />
+    </button>
+  );
 
   return (
-    <>
-      <div className="header">
-        <h1 data-testid="page-title">{title}</h1>
-        <div>
-          { searchBt
-              && (
-                <button
-                  // data-testid="search-top-btn"
-                  type="button"
-                  onClick={ () => setSearchBar(!searchBar) }
-                >
-                  <img
-                    data-testid="search-top-btn"
-                    src={ searchIcon }
-                    alt="search"
-                  />
-                </button>
-              )}
-          <button
-            // data-testid="profile-top-btn"
-            type="button"
-            onClick={ () => history.push('/profile') }
-          >
-            <img
-              data-testid="profile-top-btn"
-              src={ profileIcon }
-              alt="profile"
-            />
-          </button>
-
-        </div>
-      </div>
-      { searchBt && searchBar && <SearchBar /> }
-    </>
+    <header className="header">
+      <h1 data-testid="page-title">{ title }</h1>
+      { renderSeachBar && <SearchBar /> }
+      { renderSearchButton && searchButton }
+      <Link to="/profile">
+        <img data-testid="profile-top-btn" src={ profileIcon } alt="profile" />
+      </Link>
+    </header>
   );
 }
-
-export default Header;

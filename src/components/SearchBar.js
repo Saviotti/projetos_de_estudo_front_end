@@ -1,121 +1,115 @@
-import { useState, useCallback, useContext, useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
-import fetchAPI from '../utils/fetchAPI';
-import { Context } from '../context/ContextProvider';
+import { useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useMenu } from '../context/MenuProvider';
+import {
+  filterByFirstLetterUrl,
+  filterByIngredientUrl,
+  filterByNameUrl,
+} from '../utils/endpoints';
+import { fetchApi } from '../utils/fetchAPI';
 
-function SearchBar() {
-  const INITIAL_STATE = {
-    searchFor: '',
-    searchBy: 'ingredient',
-  };
+const INITIAL_STATE = {
+  searchInput: '',
+  searchRadio: '',
+};
 
+export default function SearchBar() {
+  const { menu, setMenu } = useMenu();
   const [state, setState] = useState(INITIAL_STATE);
-  const { menu, setMenu, page } = useContext(Context);
-  const location = useLocation();
+  const { searchInput, searchRadio } = state;
+  const { pathname } = useLocation();
+
   const history = useHistory();
 
   useEffect(() => {
-    const key = location.pathname === '/meals' ? 'idMeal' : 'idDrink';
     switch (menu.length) {
     case 0:
       global.alert('Sorry, we haven\'t found any recipes for these filters.');
       break;
-    case 1:
-      history.push(`/${page}/${menu[0][key]}`);
+    case 1: {
+      const { idMeal, idDrink } = menu[0];
+      history.push(`/${idMeal ? 'meals' : 'drinks'}/${idDrink || idMeal}`);
       break;
+    }
     default:
       break;
     }
-  }, [menu]);
+  }, [menu, history]);
 
   const handleInputChange = useCallback(({ target }) => {
-    setState((prevState) => ({
-      ...prevState, [target.name]: target.value,
-    }));
+    setState((prevState) => ({ ...prevState, [target.name]: target.value }));
   }, []);
 
-  const verifyStr = async (path, key) => {
-    if (state.searchFor.length !== 1) {
-      return global.alert('Your search must have only 1 (one) character');
-    }
-    setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key) || []);
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!searchInput || !searchRadio) return;
 
-  const handleClick = useCallback(async () => {
-    console.log('handleClick', state.searchBy, state.searchFor);
-    const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
-    const key = location.pathname.slice(1);
-    switch (state.searchBy) {
+    const recipesType = pathname.includes('/meals') ? 'meal' : 'cocktail';
+    switch (searchRadio) {
     case 'ingredient':
-      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/filter.php?i=${state.searchFor}`, key) || []);
+      fetchApi(setMenu, filterByIngredientUrl(recipesType, searchInput));
       break;
     case 'name':
-      setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?s=${state.searchFor}`, key) || []);
+      fetchApi(setMenu, filterByNameUrl(recipesType, searchInput));
       break;
-    case 'first-letter':
-      verifyStr(path, key);
+    case 'firstLetter':
+      if (searchInput.length > 1) {
+        global.alert('Your search must have only 1 (one) character');
+        return;
+      }
+      fetchApi(setMenu, filterByFirstLetterUrl(recipesType, searchInput));
       break;
     default:
       break;
     }
-    setState({ ...state, searchFor: '' });
-  });
+  };
 
   return (
-    <div className="searchBar">
+    <form onSubmit={ handleSubmit } className="searchBar">
       <input
         data-testid="search-input"
-        value={ state.searchFor }
         placeholder="Search"
         type="text"
+        value={ searchInput }
         onChange={ handleInputChange }
-        name="searchFor"
+        name="searchInput"
       />
-      <div>
-        <label htmlFor="ingredient">
-          Ingredients
-          <input
-            data-testid="ingredient-search-radio"
-            type="radio"
-            name="searchBy"
-            value="ingredient"
-            id="ingredient"
-            onChange={ handleInputChange }
-          />
-        </label>
-        <label htmlFor="name">
-          Name
-          <input
-            data-testid="name-search-radio"
-            type="radio"
-            name="searchBy"
-            value="name"
-            id="name"
-            onChange={ handleInputChange }
-          />
-        </label>
-        <label htmlFor="first-letter">
-          First letter
-          <input
-            data-testid="first-letter-search-radio"
-            type="radio"
-            name="searchBy"
-            value="first-letter"
-            id="first-letter"
-            onChange={ handleInputChange }
-          />
-        </label>
-      </div>
-      <button
-        type="button"
-        data-testid="exec-search-btn"
-        onClick={ handleClick }
-      >
+      <label htmlFor="ingredient-search-radio">
+        Ingredient
+        <input
+          data-testid="ingredient-search-radio"
+          id="ingredient-search-radio"
+          type="radio"
+          name="searchRadio"
+          value="ingredient"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <label htmlFor="name-search-radio">
+        Name
+        <input
+          data-testid="name-search-radio"
+          id="name-search-radio"
+          type="radio"
+          name="searchRadio"
+          value="name"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <label htmlFor="first-letter-search-radio">
+        First letter
+        <input
+          data-testid="first-letter-search-radio"
+          id="first-letter-search-radio"
+          type="radio"
+          name="searchRadio"
+          value="firstLetter"
+          onChange={ handleInputChange }
+        />
+      </label>
+      <button type="submit" data-testid="exec-search-btn">
         Search
       </button>
-    </div>
-
+    </form>
   );
 }
-
-export default SearchBar;

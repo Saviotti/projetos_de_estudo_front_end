@@ -1,7 +1,7 @@
-import Header from '../components/Header';
+import React from 'react';
 
 export default function FavoriteRecipes() {
   return (
-    <Header />
+    <h1>Favorite Recipes</h1>
   );
 }

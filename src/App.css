@@ -124,33 +124,38 @@ footer {
   align-items: center;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  line-height: 0.7;
   margin: auto;
+  margin-block-end: inherit;
 }
 
 .login {
   align-items: center;
   background-color: #b73e3e;
-  border: 1px solid black;
+  border: 2px inset black;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  height: 200px;
-  justify-content: space-evenly;
+  height: 255px;
+  justify-content: space-around;
   margin: auto;
   margin-top: 180px;
   width: 250px;
+}
+
+.login input {
+  background-color: #eddbc0;
+  height: 30px;
+  width: 200px;
 }
 
 .login button {
   background-color: #eddbc0;
   border: 1px solid black;
   border-radius: 10px;
-  height: 25px;
-  min-width: 100px;
-}
-
-input {
-  background-color: #eddbc0;
+  height: 30px;
+  width: 120px;
 }
 
 .filterButtons button {
@@ -172,7 +177,7 @@ input {
   width: 45px;
 }
 
-.iconButtons{
+.iconButtons {
   display: flex;
 }
 

@@ -8,14 +8,14 @@ import blackHeartIcon from '../images/blackHeartIcon.svg';
 export default function FavRecipeCard(props) {
   const { recipe, index, setData } = props;
   const { type, id, image, nationality, category,
-    alcoholicOrNot, name, doneDate } = recipe;
+    alcoholicOrNot, name, doneDate, tags } = recipe;
   const [isCopied, setIsCopied] = useState(false);
 
   const handleClickShareBtn = (item) => {
-    const threeSeconds = 3000;
+    const oneSeconds = 1000;
     clipboardCopy(`http://localhost:3000/${item.type}s/${item.id}`);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), threeSeconds);
+    setTimeout(() => setIsCopied(false), oneSeconds);
   };
 
   const handleClickFavorite = (rec) => {
@@ -47,6 +47,17 @@ export default function FavRecipeCard(props) {
           {`${nationality} - ${category}`}
           {alcoholicOrNot}
         </p>
+
+        { tags && (
+          tags.map((tag) => (
+            <span
+              key={ tag }
+              data-testid={ `${index}-${tag}-horizontal-tag` }
+            >
+              {tag}
+            </span>
+          ))
+        )}
 
         { doneDate && (
           <p data-testid={ `${index}-horizontal-done-date` }>

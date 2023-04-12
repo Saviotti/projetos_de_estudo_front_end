@@ -1,4 +1,4 @@
-export const RECIPES_QUANTITY = 12;
+const RECIPES_QUANTITY = 12;
 
 export async function fetchApi(setFunction, endpoint, quantity = RECIPES_QUANTITY) {
   try {

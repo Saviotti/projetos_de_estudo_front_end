@@ -1,7 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 
 export default function Profile() {
   const getUserEmail = JSON.parse(localStorage.getItem('user'));
@@ -23,7 +21,6 @@ export default function Profile() {
 
   return (
     <div>
-      <Header />
       <h3
         className="Profile"
         data-testid="profile-email"
@@ -55,7 +52,6 @@ export default function Profile() {
           Logout
         </button>
       </div>
-      <Footer />
     </div>
   );
 }

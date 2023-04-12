@@ -6,7 +6,6 @@ import { useMenu } from '../context/MenuProvider';
 import { categoriesUrl, filterByCategoryUrl, recipesUrl } from '../utils/endpoints';
 import { fetchApi } from '../utils/fetchAPI';
 
-const RECIPES_QUANTITY = 12;
 const CATEGORIES_QUANTITY = 5;
 
 export default function Recipes() {
@@ -18,7 +17,7 @@ export default function Recipes() {
   const [currentFilter, setCurrentFilter] = useState('');
 
   useEffect(() => {
-    fetchApi(setMenu, recipesUrl(recipesType), RECIPES_QUANTITY);
+    fetchApi(setMenu, recipesUrl(recipesType));
     fetchApi(setCategories, categoriesUrl(recipesType), CATEGORIES_QUANTITY);
   }, [recipesType, setMenu]);
 
@@ -28,7 +27,7 @@ export default function Recipes() {
       ? filterByCategoryUrl(recipesType, newCategory)
       : recipesUrl(recipesType);
 
-    fetchApi(setMenu, endpoint, RECIPES_QUANTITY);
+    fetchApi(setMenu, endpoint);
 
     setCurrentFilter(newCategory);
   }, [currentFilter, recipesType, setMenu]);

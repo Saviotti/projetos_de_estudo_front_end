@@ -1,4 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useMenu } from '../context/MenuProvider';
+import {
+  filterByFirstLetterUrl,
+  filterByIngredientUrl,
+  filterByNameUrl,
+} from '../utils/endpoints';
+import { fetchApi } from '../utils/fetchAPI';
 
 const INITIAL_STATE = {
   searchInput: '',
@@ -6,56 +14,54 @@ const INITIAL_STATE = {
 };
 
 export default function SearchBar() {
-  // const { menu, setMenu } = useMenu();
+  const { menu, setMenu } = useMenu();
   const [state, setState] = useState(INITIAL_STATE);
-  const { searchInput } = state;
-  // const location = useLocation();
-  // const history = useHistory();
+  const { searchInput, searchRadio } = state;
+  const { pathname } = useLocation();
 
-  // useEffect(() => {
-  //   const key = location.pathname === '/meals' ? 'idMeal' : 'idDrink';
-  //   switch (menu.length) {
-  //   case 0:
-  //     global.alert('Sorry, we haven\'t found any recipes for these filters.');
-  //     break;
-  //   case 1:
-  //     history.push(`/${page}/${menu[0][key]}`);
-  //     break;
-  //   default:
-  //     break;
-  //   }
-  // }, [menu]);
+  const history = useHistory();
+
+  useEffect(() => {
+    switch (menu.length) {
+    case 0:
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+      break;
+    case 1: {
+      const { idMeal, idDrink } = menu[0];
+      history.push(`/${idMeal ? 'meals' : 'drinks'}/${idDrink || idMeal}`);
+      break;
+    }
+    default:
+      break;
+    }
+  }, [menu, history]);
 
   const handleInputChange = useCallback(({ target }) => {
     setState((prevState) => ({ ...prevState, [target.name]: target.value }));
   }, []);
 
-  // const verifyStr = async (path, key) => {
-  //   if (state.searchFor.length !== 1) {
-  //     return global.alert('Your search must have only 1 (one) character');
-  //   }
-  //   setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?f=${state.searchFor}`, key) || []);
-  // };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    // console.log('handleClick', state.searchBy, state.searchFor);
-    // const path = location.pathname.includes('/meals') ? 'themealdb' : 'thecocktaildb';
-    // const key = location.pathname.slice(1);
-    // switch (state.searchBy) {
-    // case 'ingredient':
-    //   setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/filter.php?i=${state.searchFor}`, key) || []);
-    //   break;
-    // case 'name':
-    //   setMenu(await fetchAPI(`https://www.${path}.com/api/json/v1/1/search.php?s=${state.searchFor}`, key) || []);
-    //   break;
-    // case 'first-letter':
-    //   verifyStr(path, key);
-    //   break;
-    // default:
-    //   break;
-    // }
-    // setState({ ...state, searchFor: '' });
+    if (!searchInput || !searchRadio) return;
+
+    const recipesType = pathname.includes('/meals') ? 'meal' : 'cocktail';
+    switch (searchRadio) {
+    case 'ingredient':
+      fetchApi(setMenu, filterByIngredientUrl(recipesType, searchInput));
+      break;
+    case 'name':
+      fetchApi(setMenu, filterByNameUrl(recipesType, searchInput));
+      break;
+    case 'firstLetter':
+      if (searchInput.length > 1) {
+        global.alert('Your search must have only 1 (one) character');
+        return;
+      }
+      fetchApi(setMenu, filterByFirstLetterUrl(recipesType, searchInput));
+      break;
+    default:
+      break;
+    }
   };
 
   return (
@@ -69,7 +75,7 @@ export default function SearchBar() {
         name="searchInput"
       />
       <label htmlFor="ingredient-search-radio">
-        Ingredients
+        Ingredient
         <input
           data-testid="ingredient-search-radio"
           id="ingredient-search-radio"

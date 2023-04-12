@@ -74,6 +74,7 @@ function SearchBar() {
         <label htmlFor="ingredient">
           Ingredients
           <input
+            className="radio"
             data-testid="ingredient-search-radio"
             type="radio"
             name="searchBy"
@@ -85,6 +86,7 @@ function SearchBar() {
         <label htmlFor="name">
           Name
           <input
+            className="radio"
             data-testid="name-search-radio"
             type="radio"
             name="searchBy"
@@ -96,6 +98,7 @@ function SearchBar() {
         <label htmlFor="first-letter">
           First letter
           <input
+            className="radio"
             data-testid="first-letter-search-radio"
             type="radio"
             name="searchBy"

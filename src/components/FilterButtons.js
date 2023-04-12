@@ -1,20 +1,19 @@
-import PropTypes, { string } from 'prop-types';
+import PropTypes from 'prop-types';
 
 export default function FilterButtons(props) {
-  const {localStorageKey,} = props;
-  const [dataApi, setDataApi] = useState([]);
+  const { localStorageKey, setData } = props;
 
   const handleClickAll = () => {
-    setDataApi(JSON.parse(localStorage.getItem(localStorageKey)));
+    setData(JSON.parse(localStorage.getItem(localStorageKey)));
   };
 
   const handleFilter = (type) => {
     const filter = JSON.parse(localStorage.getItem(localStorageKey));
-    setDataApi(filter.filter((e) => e.type === type));
+    setData(filter.filter((e) => e.type === type));
   };
 
   return (
-    <section>
+    <section className="filterButtons">
       <button
         data-testid="filter-by-all-btn"
         type="button"
@@ -41,3 +40,8 @@ export default function FilterButtons(props) {
     </section>
   );
 }
+
+FilterButtons.propTypes = {
+  localStorageKey: PropTypes.string.isRequired,
+  setData: PropTypes.func.isRequired,
+};

@@ -13,6 +13,7 @@ function App() {
     <ContextProvider>
       <Switch>
         <Route exact path="/" component={ Login } />
+        <Route exact path="/drinks/:id" component={ RecipeDetails } />
         <Route path="/drinks" component={ Recipes } />
         <Route exact path="/meals/:id" component={ RecipeDetails } />
         <Route path="/meals" component={ Recipes } />

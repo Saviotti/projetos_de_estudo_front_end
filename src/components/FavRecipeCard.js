@@ -3,20 +3,26 @@ import PropTypes, { string } from 'prop-types';
 import { useState } from 'react';
 import clipboardCopy from 'clipboard-copy';
 import shareIcon from '../images/shareIcon.svg';
-import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 
 export default function FavRecipeCard(props) {
-  const { recipe, index } = props;
+  const { recipe, index, setData } = props;
   const { type, id, image, nationality, category,
     alcoholicOrNot, name, doneDate } = recipe;
   const [isCopied, setIsCopied] = useState(false);
-  console.log(recipe);
 
   const handleClickShareBtn = (item) => {
     const threeSeconds = 3000;
     clipboardCopy(`http://localhost:3000/${item.type}s/${item.id}`);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), threeSeconds);
+  };
+
+  const handleClickFavorite = (rec) => {
+    const data = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const newData = data.filter((item) => item.id !== rec.id);
+    setData(newData);
+    localStorage.setItem('favoriteRecipes', JSON.stringify(newData));
   };
 
   return (
@@ -42,13 +48,14 @@ export default function FavRecipeCard(props) {
           {alcoholicOrNot}
         </p>
 
-        <p
-          data-testid={ `${index}-horizontal-done-date` }
-        >
-          {doneDate}
-        </p>
+        { doneDate && (
+          <p data-testid={ `${index}-horizontal-done-date` }>
+            {doneDate}
+          </p>
+        )}
+
         {isCopied && <p>Link copied!</p>}
-        <div>
+        <div className="iconButtons">
           <button
             onClick={ () => handleClickShareBtn(recipe) }
           >
@@ -60,11 +67,11 @@ export default function FavRecipeCard(props) {
           </button>
 
           <button
-            onClick={ () => handleFavorite(recipe) }
+            onClick={ () => handleClickFavorite(recipe) }
           >
             <img
               data-testid={ `${index}-horizontal-favorite-btn` }
-              src={ whiteHeartIcon }
+              src={ blackHeartIcon }
               alt="favorite-button"
             />
           </button>
@@ -89,4 +96,5 @@ FavRecipeCard.propTypes = {
     tags: PropTypes.arrayOf(string),
   }).isRequired,
   index: PropTypes.number.isRequired,
+  setData: PropTypes.func.isRequired,
 };

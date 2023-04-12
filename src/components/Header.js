@@ -28,7 +28,6 @@ function Header() {
           { searchBt
               && (
                 <button
-                  // data-testid="search-top-btn"
                   type="button"
                   onClick={ () => setSearchBar(!searchBar) }
                 >
@@ -40,7 +39,6 @@ function Header() {
                 </button>
               )}
           <button
-            // data-testid="profile-top-btn"
             type="button"
             onClick={ () => history.push('/profile') }
           >

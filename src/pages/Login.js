@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { validateLogin } from '../utils/validateLogin';
+import chefHatIcon from '../images/chefHatIcon.svg';
 
 const INITIAL_STATE = { email: '', password: '' };
 
@@ -21,9 +22,10 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={ handleSubmit }>
-      <h1 className="h1">LOGIN</h1>
-      <div className="login">
+    <div className="login-back">
+      <form className="login" onSubmit={ handleSubmit }>
+        {/* <h1 className="h1">LOGIN</h1> */}
+        <img src={ chefHatIcon } alt="logo" width={ 80 } />
         <label htmlFor="email-input">
           <input
             data-testid="email-input"
@@ -46,6 +48,7 @@ export default function Login() {
             id="password-input"
           />
         </label>
+
         <button
           type="submit"
           data-testid="login-submit-btn"
@@ -55,7 +58,7 @@ export default function Login() {
         >
           Enter
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

@@ -14,9 +14,9 @@ export default function FavShareButtons({ shareDataTestid, recipe, favDataTestid
     setHeart(data.some((item) => item.id === recipe.id));
   }, []);
 
-  const handleClickShareBtn = (item) => {
+  const handleClickShareBtn = () => {
     const oneSeconds = 1000;
-    clipboardCopy(`http://localhost:3000/${item.type}s/${item.id}`);
+    clipboardCopy(`http://localhost:3000/${recipe.type}s/${recipe.id}`);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), oneSeconds);
   };

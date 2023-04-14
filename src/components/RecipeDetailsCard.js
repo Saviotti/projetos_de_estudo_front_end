@@ -7,6 +7,16 @@ import back from '../images/back.svg';
 
 function RecipeDetailsCard({ details }) {
   const { history } = useHistory();
+  const recipe = {
+    alcoholicOrNot: details.strAlcoholic || '',
+    category: details.strCategory || '',
+    id: details.idDrink || details.idMeal,
+    image: details.strDrinkThumb || details.strMealThumb,
+    name: details.strDrink || details.strMeal,
+    nationality: details.strArea || '',
+    type: details.idMeal ? 'meal' : 'drink',
+  };
+
   return (
     <div className="recipeDetails">
       <header className="header">
@@ -20,18 +30,18 @@ function RecipeDetailsCard({ details }) {
         </h1>
         <FavShareButtons
           shareDataTestid="share-btn"
-          recipe={ { id: '52771', type: 'meal' } }
+          recipe={ recipe }
           favDataTestid="favorite-btn"
         />
       </header>
       <RecipeImage data={ details } />
       <fieldset>
         <legend>TAGs</legend>
-        <h2
+        <p
           data-testid="recipe-category"
         >
           {details.strAlcoholic || details.strCategory}
-        </h2>
+        </p>
       </fieldset>
       <IngredientsList details={ details } />
       <fieldset
@@ -51,7 +61,6 @@ function RecipeDetailsCard({ details }) {
           allow="accelerometer; autoplay; clipboard-write;
           encrypted-media; gyroscope; picture-in-picture; web-share"
           data-testid="video"
-          // allowfullscreen
         />)}
     </div>
   );
@@ -64,6 +73,11 @@ RecipeDetailsCard.propTypes = {
     strAlcoholic: PropTypes.string,
     strInstructions: PropTypes.string,
     strYoutube: PropTypes.string,
+    idDrink: PropTypes.string,
+    idMeal: PropTypes.string,
+    strDrinkThumb: PropTypes.string,
+    strMealThumb: PropTypes.string,
+    strArea: PropTypes.string,
   }).isRequired,
 };
 export default RecipeDetailsCard;

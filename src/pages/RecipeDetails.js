@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import RecipeDetailsCard from '../components/FavRecipeCard';
+import { useHistory } from 'react-router-dom';
+import RecipeDetailsCard from '../components/RecipeDetailsCard';
 import RecommendCard from '../components/RecommendCard';
 import { fetchApi } from '../utils/fetchAPI';
 import { recipesUrl } from '../utils/endpoints';
@@ -9,6 +10,34 @@ export default function RecipeDetails({ match }) {
   const { params, url } = match;
   const [details, setDetails] = useState();
   const [recommendation, setRecommendation] = useState();
+  const [done, setDone] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
+  const history = useHistory();
+  const path = url.includes('drinks') ? 'drinks' : 'meals';
+  // const inProgressRecipes = {
+  //   meals: {
+  //     52774: [],
+  //   },
+  //   drinks: {
+  //     178320: [],
+  //   },
+  // };
+
+  useEffect(() => {
+    // localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressRecipes));
+    console.log(url);
+    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes')) || [];
+    console.log(doneRecipes);
+    const isDone = doneRecipes.some((recipe) => recipe.id === params.id);
+    setDone(isDone);
+    const inProgressRecipe = JSON.parse(localStorage.getItem('inProgressRecipes')) || [];
+    console.log(inProgressRecipe);
+    if (inProgressRecipe.length > 0) {
+      const Progress = Object.keys(inProgressRecipe[path])
+        .some((recipe) => recipe === params.id);
+      setInProgress(Progress);
+    }
+  }, []);
 
   useEffect(() => {
     const numberOfRecipes = 6;
@@ -35,7 +64,6 @@ export default function RecipeDetails({ match }) {
       fetchApi(setRecommendation, recipesUrl('cocktail'), numberOfRecipes);
     }
   }, [params.id, url]);
-  console.log(details);
 
   return (
     <section className="recipeDetailss">
@@ -52,8 +80,10 @@ export default function RecipeDetails({ match }) {
       <button
         className="startRecipe"
         data-testid="start-recipe-btn"
+        disabled={ done }
+        onClick={ () => { history.push(`/${path}/${params.id}/in-progress`); } }
       >
-        Start Recipe
+        { inProgress ? 'Continue Recipe' : 'Start Recipe' }
       </button>
     </section>
   );

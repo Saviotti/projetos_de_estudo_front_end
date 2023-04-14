@@ -53,8 +53,7 @@ h2 {
   flex-direction: column;
 }
 
-footer,
-.startRecipe {
+footer, .startRecipe {
   align-items: center;
   background-color: #b73e3e;
   border-radius: 10px 10px 0 0;
@@ -205,10 +204,10 @@ a {
 }
 
 .recipeDetails {
+  align-items: center;
   display: flex;
   flex-direction: column;
   width: 400px;
-  align-items: center;
 }
 
 .recipeDetailss {
@@ -224,23 +223,25 @@ iframe {
   margin-top: -40px;
 }
 
-fieldset{
-  border-radius: 20px;
+fieldset {
   border: 1px inset black;
+  border-radius: 20px;
   display: flex;
   justify-content: center;
-  margin-bottom: 70px;
+  margin-bottom: 60px;
+  margin-top: -30px;
   width: 340px;
 
 }
 
 legend {
   font-size: large;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .cover {
   border-radius: 20px;
-  margin-bottom:  20px;
+  margin-bottom: 60px;
   margin-top: 20px;
+  width: 360px;
 }

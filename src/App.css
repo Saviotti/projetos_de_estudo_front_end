@@ -41,6 +41,7 @@ h2 {
   flex-direction: row;
   justify-content: space-between;
   min-height: 85px;
+  width: 100%;
 }
 
 .searchBar {
@@ -52,7 +53,7 @@ h2 {
   flex-direction: column;
 }
 
-footer {
+footer, .startRecipe {
   align-items: center;
   background-color: #b73e3e;
   border-radius: 10px 10px 0 0;
@@ -188,4 +189,59 @@ footer {
 
 a {
   text-decoration: none;
+}
+
+.carousel {
+  display: flex;
+  overflow: auto;
+  scroll-snap-type: x mandatory;
+  width: 292px;
+}
+
+.carousel .recipeCard {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.recipeDetails {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.recipeDetailss {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+iframe {
+  border-radius: 20px;
+  margin-bottom: 30px;
+  margin-top: -40px;
+}
+
+fieldset {
+  border: 1px inset black;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+  margin-top: -30px;
+  width: 340px;
+
+}
+
+legend {
+  font-size: large;
+  font-weight: 700;
+}
+
+.cover {
+  border-radius: 20px;
+  margin-bottom: 60px;
+  margin-top: 20px;
+  width: 360px;
 }
